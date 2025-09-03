@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Reflection.Emit;
 using Domain;
 
-namespace TooliRent.Infrastructure;
+namespace Infrastructure.Data;
 
 public class TooliRentDbContext : IdentityDbContext<AppUser, IdentityRole<Guid>, Guid>
 {
