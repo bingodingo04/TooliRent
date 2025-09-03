@@ -7,4 +7,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\TooliRent.Domain\Domain.csproj" />
+  </ItemGroup>
+
 </Project>
