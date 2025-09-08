@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.12.35527.113 d17.12
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api", "TooliRent\Api.csproj", "{4740986D-BF58-47B9-A61B-E6809BC9DD9F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api", "Api\Api.csproj", "{4740986D-BF58-47B9-A61B-E6809BC9DD9F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "TooliRent.Application\Application.csproj", "{080AC434-25CE-4414-9C9B-C0DF9814BBD7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "Application\Application.csproj", "{080AC434-25CE-4414-9C9B-C0DF9814BBD7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "TooliRent.Domain\Domain.csproj", "{512AE9DF-2E68-447D-8D3A-9F108D250E71}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{512AE9DF-2E68-447D-8D3A-9F108D250E71}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{DFE3961D-E355-4882-875E-BA1FD83BA40F}"
 EndProject
