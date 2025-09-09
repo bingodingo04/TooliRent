@@ -132,6 +132,13 @@ namespace Api
             // Build the app pipeline
             var app = builder.Build();
 
+            // Apply migrations + seed on startup
+            using (var scope = app.Services.CreateScope())
+            {
+                Infrastructure.Data.Seed.RunAsync(app.Services).GetAwaiter().GetResult();
+            }
+
+
             // Enable Swagger UI in Development environment
             if (app.Environment.IsDevelopment())
             {
