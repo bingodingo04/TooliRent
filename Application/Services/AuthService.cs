@@ -66,7 +66,7 @@ namespace Application.Services
         };
             claims.AddRange(roles.Select(r => new Claim(ClaimTypes.Role, r)));
 
-            var expires = DateTime.UtcNow.AddHours(2);
+            var expires = DateTime.UtcNow.AddHours(3);
             var token = new JwtSecurityToken(
                 issuer: _cfg["Jwt:Issuer"],
                 audience: _cfg["Jwt:Audience"],
