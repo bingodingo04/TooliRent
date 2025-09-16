@@ -13,14 +13,34 @@ namespace Application
     {
         public MappingProfile()
         {
+            // Category/Tool
             CreateMap<Category, CategoryReadDto>();
             CreateMap<Tool, ToolReadDto>()
-                .ForMember(d => d.CategoryName, opt => opt.MapFrom(s => s.Category.Name));
+                .ForCtorParam("Id", o => o.MapFrom(s => s.Id))
+                .ForCtorParam("Name", o => o.MapFrom(s => s.Name))
+                .ForCtorParam("CategoryName", o => o.MapFrom(s => s.Category.Name))
+                .ForCtorParam("Status", o => o.MapFrom(s => s.Status))
+                .ForCtorParam("SerialNumber", o => o.MapFrom(s => s.SerialNumber))
+                .ForCtorParam("Condition", o => o.MapFrom(s => s.Condition))
+                .ForCtorParam("Description", o => o.MapFrom(s => s.Description));
+
             CreateMap<ToolCreateUpdateDto, Tool>();
 
+            // BookingItem -> BookingItemReadDto (viktig!)
+            CreateMap<BookingItem, BookingItemReadDto>()
+                .ForCtorParam("ToolId", o => o.MapFrom(s => s.ToolId))
+                .ForCtorParam("ToolName", o => o.MapFrom(s => s.Tool.Name)); // kräver att Tool är laddad
+
+            // Booking -> BookingReadDto
             CreateMap<Booking, BookingReadDto>()
-                .ForMember(d => d.Items, opt => opt.MapFrom(s => s.Items.Select(i =>
-                    new BookingItemReadDto(i.ToolId, i.Tool.Name)).ToList()));
+                .ForCtorParam("Id", o => o.MapFrom(s => s.Id))
+                .ForCtorParam("StartAt", o => o.MapFrom(s => s.StartAt))
+                .ForCtorParam("EndAt", o => o.MapFrom(s => s.EndAt))
+                .ForCtorParam("Status", o => o.MapFrom(s => s.Status))
+                .ForCtorParam("PickedUpAt", o => o.MapFrom(s => s.PickedUpAt))
+                .ForCtorParam("ReturnedAt", o => o.MapFrom(s => s.ReturnedAt))
+                .ForCtorParam("Items", o => o.MapFrom(s => s.Items)); // nu finns item-mappningen
         }
     }
 }
+
