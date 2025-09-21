@@ -20,7 +20,7 @@ namespace TooliRent.Api.Controllers
             Ok(await _svc.LoginAsync(dto, ct));
 
         [HttpPost("refresh")]
-        public async Task<ActionResult<AuthResponseDto>> Refresh([FromBody] string refreshToken, CancellationToken ct) =>
-            Ok(await _svc.RefreshAsync(refreshToken, ct));
+        public async Task<ActionResult<AuthResponseDto>> Refresh([FromBody] RefreshRequest req, CancellationToken ct) =>
+        Ok(await _svc.RefreshAsync(req, ct));
     }
 }
