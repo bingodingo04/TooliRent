@@ -9,7 +9,8 @@ namespace Application
 {
     public record RegisterDto(string Email, string Password);
     public record LoginDto(string Email, string Password);
-    public record AuthResponseDto(string AccessToken, DateTime ExpiresAt, string RefreshToken);
+    public record AuthResponseDto(string AccessToken, DateTime ExpiresAt, string RefreshToken, Guid UserId);
+    public record RefreshRequest(string RefreshToken, Guid UserId);
 
     public record CategoryReadDto(Guid Id, string Name);
     public record CategoryCreateDto(string Name);

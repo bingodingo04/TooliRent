@@ -45,12 +45,20 @@ namespace Application.Services
             return await GenerateTokensAsync(user);
         }
 
-        public Task<AuthResponseDto> RefreshAsync(string refreshToken, CancellationToken ct)
+        public async Task<AuthResponseDto> RefreshAsync(RefreshRequest req, CancellationToken ct)
         {
-            // För kursens scope: generera bara ny access-token om refresh == "dummy"
-            if (refreshToken != "dummy") throw new Exception("Invalid refresh token");
-            // I skarpt läge: spara/rotera refresh tokens i DB.
-            throw new NotImplementedException("Implementera refresh token lagring för VG-nivå.");
+            // Kursens “dummy”-regel
+            if (req.RefreshToken != "dummy")
+                throw new Exception("Invalid refresh token");
+
+            // Hämta användaren som ska få ny access-token
+            var user = await _userMgr.FindByIdAsync(req.UserId.ToString())
+                       ?? throw new Exception("User not found");
+
+            if (!user.IsActive) throw new Exception("User inactive");
+
+            // Återanvänd din befintliga token-generator
+            return await GenerateTokensAsync(user);
         }
 
         private async Task<AuthResponseDto> GenerateTokensAsync(AppUser user)
@@ -75,7 +83,7 @@ namespace Application.Services
                 signingCredentials: creds
             );
 
-            return new AuthResponseDto(new JwtSecurityTokenHandler().WriteToken(token), expires, "dummy");
+            return new AuthResponseDto(new JwtSecurityTokenHandler().WriteToken(token), expires, "dummy", user.Id);
         }
     }
 }
