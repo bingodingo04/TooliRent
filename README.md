@@ -101,7 +101,6 @@ Vid första körningen seedas:
 * POST /api/bookings/{id}/return – markera som återlämnad
 
 ### Admin
-* GET /api/admin/users – lista användare
 * PUT /api/admin/users/{id}/activate – aktivera användare
 * PUT /api/admin/users/{id}/deactivate – inaktivera användare
 * GET /api/admin/statistics – statistik över användning och uthyrning
