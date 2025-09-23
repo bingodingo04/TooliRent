@@ -3,6 +3,8 @@ using Application;
 using Domain;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
+using FluentValidation;
 
 namespace TooliRent.Api.Controllers
 {
@@ -27,12 +29,20 @@ namespace TooliRent.Api.Controllers
         }
 
         [HttpPost, Authorize(Policy = "AdminOnly")]
-        public async Task<ActionResult<ToolReadDto>> Create(ToolCreateUpdateDto dto, CancellationToken ct) =>
-            Ok(await _svc.CreateAsync(dto, ct));
+        public async Task<ActionResult<ToolReadDto>> Create(ToolCreateUpdateDto dto, IValidator<ToolCreateUpdateDto> validator, CancellationToken ct)
+        {
+            var result = await validator.ValidateAsync(dto, ct);
+            if (!result.IsValid)
+                return BadRequest(result.Errors);
+            return Ok(await _svc.CreateAsync(dto, ct));
+        }
 
         [HttpPut("{id:guid}"), Authorize(Policy = "AdminOnly")]
-        public async Task<ActionResult<ToolReadDto>> Update(Guid id, ToolCreateUpdateDto dto, CancellationToken ct)
+        public async Task<ActionResult<ToolReadDto>> Update(Guid id, ToolCreateUpdateDto dto, IValidator<ToolCreateUpdateDto> validator, CancellationToken ct)
         {
+            var result = await validator.ValidateAsync(dto, ct);
+            if (!result.IsValid)
+                return BadRequest(result.Errors);
             var res = await _svc.UpdateAsync(id, dto, ct);
             return res is null ? NotFound() : Ok(res);
         }

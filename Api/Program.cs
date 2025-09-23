@@ -15,6 +15,7 @@ using Infrastructure.Repositories;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 using Microsoft.Extensions.Options;
+using Application.Validators;
 
 namespace Api
 {
@@ -78,7 +79,7 @@ namespace Api
             builder.Services.AddAutoMapper(cfg => cfg.AddProfile<MappingProfile>());
 
             // FluentValidation: register validators from this assembly
-            builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+            builder.Services.AddValidatorsFromAssemblyContaining<BookingCreateValidator>();
 
             // Dependency Injection for repositories and services (N-tier wiring)
             builder.Services.AddScoped<IToolRepository, ToolRepository>();
