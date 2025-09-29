@@ -30,13 +30,14 @@ namespace TooliRent.Api.Controllers
         }
 
         [HttpPut("{id:guid}"), Authorize(Policy = "AdminOnly")]
-        public async Task<IActionResult> Update(Guid id, CategoryUpdateDto dto, IValidator<CategoryUpdateDto> validator, CancellationToken ct)
+        public async Task<IActionResult> Update(Guid id, [FromBody] CategoryUpdateDto dto, [FromServices] IValidator<CategoryUpdateDto> validator, CancellationToken ct)
         {
             var result = await validator.ValidateAsync(dto, ct);
-            if (!result.IsValid)
-                return BadRequest(result.Errors);
+            if (!result.IsValid) return BadRequest(result.Errors);
+
             return await _svc.UpdateAsync(id, dto, ct) ? NoContent() : NotFound();
         }
+
 
         [HttpDelete("{id:guid}"), Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> Delete(Guid id, CancellationToken ct) =>
