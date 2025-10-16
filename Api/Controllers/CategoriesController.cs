@@ -2,6 +2,9 @@
 using Application;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
+using FluentValidation;
+using Application.Validators;
 
 namespace TooliRent.Api.Controllers
 {
@@ -18,12 +21,23 @@ namespace TooliRent.Api.Controllers
             Ok(await _svc.GetAllAsync(ct));
 
         [HttpPost, Authorize(Policy = "AdminOnly")]
-        public async Task<ActionResult<CategoryReadDto>> Create(CategoryCreateDto dto, CancellationToken ct) =>
-            Ok(await _svc.CreateAsync(dto, ct));
+        public async Task<ActionResult<CategoryReadDto>> Create(CategoryCreateDto dto, IValidator<CategoryCreateDto> validator, CancellationToken ct)
+        {
+            var result = await validator.ValidateAsync(dto, ct);
+            if (!result.IsValid)
+                return BadRequest(result.Errors);
+            return Ok(await _svc.CreateAsync(dto, ct));
+        }
 
         [HttpPut("{id:guid}"), Authorize(Policy = "AdminOnly")]
-        public async Task<IActionResult> Update(Guid id, CategoryUpdateDto dto, CancellationToken ct) =>
-            await _svc.UpdateAsync(id, dto, ct) ? NoContent() : NotFound();
+        public async Task<IActionResult> Update(Guid id, [FromBody] CategoryUpdateDto dto, [FromServices] IValidator<CategoryUpdateDto> validator, CancellationToken ct)
+        {
+            var result = await validator.ValidateAsync(dto, ct);
+            if (!result.IsValid) return BadRequest(result.Errors);
+
+            return await _svc.UpdateAsync(id, dto, ct) ? NoContent() : NotFound();
+        }
+
 
         [HttpDelete("{id:guid}"), Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> Delete(Guid id, CancellationToken ct) =>

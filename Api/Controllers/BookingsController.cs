@@ -3,6 +3,8 @@ using Application.Services.Interfaces;
 using Application;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
+using FluentValidation;
 
 namespace TooliRent.Api.Controllers
 {
@@ -23,8 +25,13 @@ namespace TooliRent.Api.Controllers
             Ok(await _svc.GetMineAsync(CurrentUserId, ct));
 
         [HttpPost]
-        public async Task<ActionResult<BookingReadDto>> Create(BookingCreateDto dto, CancellationToken ct) =>
-            Ok(await _svc.CreateAsync(CurrentUserId, dto, ct));
+        public async Task<ActionResult<BookingReadDto>> Create(BookingCreateDto dto, [FromServices] IValidator<BookingCreateDto> validator, CancellationToken ct)
+        {
+            var result = await validator.ValidateAsync(dto, ct);
+            if (!result.IsValid)
+                return BadRequest(result.Errors);
+            return Ok(await _svc.CreateAsync(CurrentUserId, dto, ct));
+        }
 
         [HttpPost("{id:guid}/cancel")]
         public async Task<IActionResult> Cancel(Guid id, CancellationToken ct) =>

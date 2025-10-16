@@ -10,6 +10,6 @@ namespace Application.Services.Interfaces
     {
         Task<AuthResponseDto> RegisterAsync(RegisterDto dto, CancellationToken ct);
         Task<AuthResponseDto> LoginAsync(LoginDto dto, CancellationToken ct);
-        Task<AuthResponseDto> RefreshAsync(string refreshToken, CancellationToken ct);
+        Task<AuthResponseDto> RefreshAsync(RefreshRequest req, CancellationToken ct);
     }
 }

@@ -14,6 +14,8 @@ using Application.Services;
 using Infrastructure.Repositories;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
+using Microsoft.Extensions.Options;
+using Application.Validators;
 
 namespace Api
 {
@@ -37,7 +39,12 @@ namespace Api
             .AddDefaultTokenProviders();                    // adds token providers (email confirm, reset password, etc.)
 
             // JWT Bearer authentication configuration
-            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            builder.Services.AddAuthentication(opt =>
+            {
+                opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                opt.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
                 .AddJwtBearer(opt =>
                 {
                     opt.TokenValidationParameters = new TokenValidationParameters
@@ -54,7 +61,10 @@ namespace Api
 
                         // Symmetric signing key (keep secret out of source control in real projects)
                         IssuerSigningKey = new SymmetricSecurityKey(
-                            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
+                            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!)),
+
+                        ClockSkew = TimeSpan.FromMinutes(1)
+
                     };
                 });
 
@@ -69,7 +79,7 @@ namespace Api
             builder.Services.AddAutoMapper(cfg => cfg.AddProfile<MappingProfile>());
 
             // FluentValidation: register validators from this assembly
-            builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+            builder.Services.AddValidatorsFromAssemblyContaining<BookingCreateValidator>();
 
             // Dependency Injection for repositories and services (N-tier wiring)
             builder.Services.AddScoped<IToolRepository, ToolRepository>();
@@ -131,6 +141,13 @@ namespace Api
 
             // Build the app pipeline
             var app = builder.Build();
+
+            // Apply migrations + seed on startup
+            using (var scope = app.Services.CreateScope())
+            {
+                Infrastructure.Data.Seed.RunAsync(app.Services).GetAwaiter().GetResult();
+            }
+
 
             // Enable Swagger UI in Development environment
             if (app.Environment.IsDevelopment())
